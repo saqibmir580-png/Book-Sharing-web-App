@@ -1,7 +1,21 @@
-import {createContext,useState,useContext} from 'react'
-import axios from 'axios'
+import { createContext, useState, useContext, useEffect } from "react";
 
-//1 create the context
-const authContext=createContext()
+const AuthContext = createContext();
 
-//2 creeate the provider to components
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // Check token on first load
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  return (
+    <AuthContext.Provider value={{ user, setUser, isLoggedIn, setIsLoggedIn }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => useContext(AuthContext);
